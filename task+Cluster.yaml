@@ -1,0 +1,68 @@
+Description: >
+    Create Client
+Parameters: 
+
+    
+    TaskName:
+        Description: Example "ui-company_name"
+        Type: String
+    ApiIp:
+        Description: API URL
+        Type: String
+    Port:
+        Description: This is the port you will use for the new service, make sure the port is not in use for another service.
+        Type: Number
+    Cluster:
+        Description: Cluster Name.
+        Type: String
+        Default: fe-low
+    Domain: 
+        Description: .bbjetcloud.net
+        Type: String
+
+Resources:
+
+    Service: 
+        Type: AWS::ECS::Service
+        Properties: 
+            Cluster: !Ref Cluster
+            DesiredCount: 1
+            TaskDefinition: !Ref TaskDefinition
+
+    TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: !Ref TaskName
+            ContainerDefinitions:
+                - Name: !Ref TaskName
+                  Essential: true
+                  Image: nikoe14/testingfe
+                  Memory: 128
+                  Environment: 
+                    - Name: API_IP
+                      Value: !Ref ApiIp
+                    - Name: API_PORT
+                      Value: 80
+                  PortMappings:
+                    - ContainerPort: 80
+                      HostPort: !Ref Port
+
+                  MountPoints: 
+                    - SourceVolume: "ui-path"
+                      ContainerPath: "/usr/share/nginx/html"
+            Volumes: 
+              - 
+                Host: 
+                  SourcePath: "/home/ec2-user/dist/"
+                Name: "ui-path"
+
+    DNSRecord:
+        Type: AWS::Route53::RecordSet
+        Properties:
+          HostedZoneId: Z30MCEBHTBX8IO
+          Comment: DNS name for container
+          Name: !Join ['', [!Ref Domain, .,'bbjetcloud.net']]
+          Type: A
+          TTL: '300'
+          ResourceRecords:
+            - 35.167.50.34
