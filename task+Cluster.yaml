@@ -26,7 +26,7 @@ Resources:
     TaskDefinition:
         Type: AWS::ECS::TaskDefinition
         Properties:
-            Family: !Join ['ui-', [!Ref CompanyName]]
+            Family: !Join ['ui-'!Ref CompanyName]
             ContainerDefinitions:
                 - Name: !Ref CompanyName
                   Essential: true
@@ -34,7 +34,7 @@ Resources:
                   Memory: 128
                   Environment: 
                     - Name: API_IP
-                      Value: !Join ['api-', [!Ref CompanyName, .,'bbjetcloud.net']]
+                      Value: !Join ['api-'!Ref CompanyName, .,'bbjetcloud.net']
                     - Name: API_PORT
                       Value: 80
                   PortMappings:
