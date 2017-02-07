@@ -1,0 +1,80 @@
+Description: >
+    Create Client
+Parameters: 
+
+    
+    TaskNameApi:
+        Description: Example "api-company_name"
+        Type: String
+    PortApi:
+        Description: This is the port you will use for the new service, make sure the port is not in use for another service.
+        Type: Number
+    ClusterApi:
+        Description: Cluster Name.
+        Type: String
+        Default: low
+    DomainApi: 
+        Description: api.DOMAIN.bbjetcloud.net
+        Type: String
+    NameDb:
+        Description: DB Name
+        Type: String
+    Endpoint:
+        Description: DB Endpoint
+        Type: String
+    Password:
+        Description: DB Password
+        Type: String
+
+Resources:
+
+    Service: 
+        Type: AWS::ECS::Service
+        Properties: 
+            Cluster: !Ref ClusterApi
+            DesiredCount: 1
+            TaskDefinition: !Ref TaskDefinition
+
+    TaskDefinition:
+        Type: AWS::ECS::TaskDefinition
+        Properties:
+            Family: !Ref TaskNameApi
+            ContainerDefinitions:
+                - Name: !Ref TaskNameApi
+                  Essential: true
+                  Image: nikoe14/testing
+                  Memory: 450
+                  Environment: 
+                    - Name: NAME_DB
+                      Value: !Ref NameDb
+                    - Name: IP_DB
+                      Value: !Ref Endpoint
+                    - Name: PASS_DB
+                      Value: !Ref Password
+                    - Name: MAX_MEM
+                      Value: 450
+                    - Name: MIN_MEM
+                      Value: 100
+                  PortMappings:
+                    - ContainerPort: 8080
+                      HostPort: !Ref PortApi
+
+                  MountPoints: 
+                    - SourceVolume: "api-path"
+                      ContainerPath: "/home/api"
+            Volumes: 
+              - 
+                Host: 
+                  SourcePath: "/home/bbjet-mobile-api"
+                Name: "api-path"
+
+    DNSRecord:
+        Type: AWS::Route53::RecordSet
+        Properties:
+          HostedZoneId: Z30MCEBHTBX8IO
+          Comment: DNS name for container
+          Name: !Join ['', ['api',.,!Ref DomainApi, .,'bbjetcloud.net']]
+          Type: A
+          TTL: '300'
+          ResourceRecords:
+            - 35.167.50.34

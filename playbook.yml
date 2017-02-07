@@ -10,7 +10,7 @@
     - debug:
         msg: "Deploying {{ domain }}  {{ port }} "
 
-    - name: template test 1
+    - name: Add new host
       template: 
             src: empresa
             dest: "/etc/nginx/sites-available/{{ domain }}.bbjetcloud.net"
