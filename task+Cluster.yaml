@@ -3,11 +3,8 @@ Description: >
 Parameters: 
 
     
-    TaskName:
-        Description: Example "ui-company_name"
-        Type: String
-    ApiIp:
-        Description: API URL
+    CompanyName:
+        Description: "Company Name. Example: company1"
         Type: String
     Port:
         Description: This is the port you will use for the new service, make sure the port is not in use for another service.
@@ -16,9 +13,6 @@ Parameters:
         Description: Cluster Name.
         Type: String
         Default: fe-low
-    Domain: 
-        Description: .bbjetcloud.net
-        Type: String
 
 Resources:
 
@@ -32,15 +26,15 @@ Resources:
     TaskDefinition:
         Type: AWS::ECS::TaskDefinition
         Properties:
-            Family: !Ref TaskName
+            Family: !Join ['ui-', [!Ref CompanyName]]
             ContainerDefinitions:
-                - Name: !Ref TaskName
+                - Name: !Ref CompanyName
                   Essential: true
                   Image: nikoe14/testingfe
                   Memory: 128
                   Environment: 
                     - Name: API_IP
-                      Value: !Ref ApiIp
+                      Value: !Join ['api-', [!Ref CompanyName, .,'bbjetcloud.net']]
                     - Name: API_PORT
                       Value: 80
                   PortMappings:
@@ -61,7 +55,7 @@ Resources:
         Properties:
           HostedZoneId: Z30MCEBHTBX8IO
           Comment: DNS name for container
-          Name: !Join ['', [!Ref Domain, .,'bbjetcloud.net']]
+          Name: !Join ['', [!Ref CompanyName, .,'bbjetcloud.net']]
           Type: A
           TTL: '300'
           ResourceRecords:
