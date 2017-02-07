@@ -3,22 +3,16 @@ Description: >
 Parameters: 
 
     
-    TaskNameApi:
+    CompanyName:
         Description: Example "api-company_name"
         Type: String
-    PortApi:
+    Port:
         Description: This is the port you will use for the new service, make sure the port is not in use for another service.
         Type: Number
-    ClusterApi:
+    Cluster:
         Description: Cluster Name.
         Type: String
         Default: low
-    DomainApi: 
-        Description: api.DOMAIN.bbjetcloud.net
-        Type: String
-    NameDb:
-        Description: DB Name
-        Type: String
     Endpoint:
         Description: DB Endpoint
         Type: String
@@ -31,22 +25,22 @@ Resources:
     Service: 
         Type: AWS::ECS::Service
         Properties: 
-            Cluster: !Ref ClusterApi
+            Cluster: !Ref Cluster
             DesiredCount: 1
             TaskDefinition: !Ref TaskDefinition
 
     TaskDefinition:
         Type: AWS::ECS::TaskDefinition
         Properties:
-            Family: !Ref TaskNameApi
+            Family: !Ref CompanyName
             ContainerDefinitions:
-                - Name: !Ref TaskNameApi
+                - Name: !Ref CompanyName
                   Essential: true
                   Image: nikoe14/testing
                   Memory: 450
                   Environment: 
                     - Name: NAME_DB
-                      Value: !Ref NameDb
+                      Value: !Ref CompanyName
                     - Name: IP_DB
                       Value: !Ref Endpoint
                     - Name: PASS_DB
@@ -57,7 +51,7 @@ Resources:
                       Value: 100
                   PortMappings:
                     - ContainerPort: 8080
-                      HostPort: !Ref PortApi
+                      HostPort: !Ref Port
 
                   MountPoints: 
                     - SourceVolume: "api-path"
@@ -73,7 +67,7 @@ Resources:
         Properties:
           HostedZoneId: Z30MCEBHTBX8IO
           Comment: DNS name for container
-          Name: !Join ['', ['api',.,!Ref DomainApi, .,'bbjetcloud.net']]
+          Name: !Join ['', ['api-',!Ref CompanyName, .,'bbjetcloud.net']]
           Type: A
           TTL: '300'
           ResourceRecords:
