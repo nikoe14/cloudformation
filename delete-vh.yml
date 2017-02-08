@@ -9,22 +9,22 @@
 
     - name: Delete sa
       file:
-        path: '/etc/nginx/sites-available/{{ domain }}.bbjetcloud.net'
+        path: '/etc/nginx/sites-available/{{ company }}.bbjetcloud.net'
         state: absent
 
     - name: Delete se
       file:
-        path: '/etc/nginx/sites-enabled/{{ domain }}.bbjetcloud.net'
+        path: '/etc/nginx/sites-enabled/{{ company }}.bbjetcloud.net'
         state: absent
 
     - name: Delete sa-api
       file:
-        path: '/etc/nginx/sites-available/api-{{ domain }}.bbjetcloud.net'
+        path: '/etc/nginx/sites-available/api-{{ company }}.bbjetcloud.net'
         state: absent
 
     - name: Delete se-api
       file:
-        path: '/etc/nginx/sites-enabled/api-{{ domain }}.bbjetcloud.net'
+        path: '/etc/nginx/sites-enabled/api-{{company }}.bbjetcloud.net'
         state: absent
 
     - name: Reload nginx
