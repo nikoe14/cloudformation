@@ -9,6 +9,6 @@ server {
         server_name {{ domain  }}.bbjetcloud.net;
 
         location / {
-                proxy_pass http://ui.bbjetcloud.net:{{ port }};
+                proxy_pass http://{{ env }}.bbjetcloud.net:{{ port }};
         }
 }
