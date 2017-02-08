@@ -1,9 +1,6 @@
 ---
 - name: copy
   hosts: all
-  vars:
-    domain: empresa3
-    port: 8083
 
   tasks:
 
